@@ -11,6 +11,8 @@ def generate_grid() -> List[List[str]]:
     for i in range(3):
         for j in range(3):
             grid[i].append(random.choice(letters).capitalize())
+    for i in grid:
+        print(i)
     return grid
 
 
@@ -19,7 +21,7 @@ def get_words(f: str, letters: List[str]) -> List[str]:
     Reads the file f. Checks the words with rules and returns a list of words.
     """
     with open(f, encoding = 'utf-8') as file:
-        words = [line.strip() for line in file if len(line.strip())>3]
+        words = [line.lower().strip() for line in file if len(line.strip())>3]
     low_letters = []
     for row in letters:
         for letter in row:
@@ -41,16 +43,8 @@ def get_user_words() -> List[str]:
     Gets words from user input and returns a list with these words.
     Usage: enter a word or press ctrl+d to finish.
     """
-    user_words = []
-    user_input = input(">>> ")
-    while user_input!="":
-        # if len(user_input)>3 and all(map(lambda x: not x.isdigit(), user_input)):
-        #     user_words.append(user_input)
-        # else:
-        #     print("Enter words with length more than 4 and word must not contain numbers")
-        user_words.append(user_input)
-        user_input = input(">>> ")
-    return user_words
+    user_input = input().lower().split()
+    return user_input
     
 
 
@@ -74,10 +68,24 @@ def get_pure_user_words(user_words: List[str], letters: List[str], words_from_di
 
 
 def results():
-    pass
+    grid = generate_grid()
+    user_words = get_user_words()
+    dict_words = get_words("en.txt", grid)  
+    print(user_words)
 
-# letters = generate_grid()
-# words = get_words("E:/UCU/OP/ЛР 6/en.txt", letters)
-# print(letters, words)
-# user_words = get_user_words()
-# print(get_pure_user_words(user_words, letters, words))
+    pure_words = get_pure_user_words(user_words, grid, dict_words)
+    print(pure_words)
+    score = 0
+    for word in user_words:
+        if word in dict_words:
+            score+=1
+            del dict_words[dict_words.index(word)]
+    with open("result.txt", "w") as file:
+        file.write(score)
+        file.write("\n")
+        for word in dict_words:
+            file.write(word+" ")
+        file.write("\n")
+        for word in pure_words:
+            file.write(word+" ")
+
