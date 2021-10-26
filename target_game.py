@@ -41,6 +41,12 @@ def get_user_words() -> List[str]:
     Gets words from user input and returns a list with these words.
     Usage: enter a word or press ctrl+d to finish.
     """
+    user_words = []
+    user_input = input(">>> ")
+    while user_input!="":
+        user_words.append(user_input)
+        user_input = input(">>> ")
+    return user_words
     
 
 
